@@ -25,3 +25,15 @@ export async function getProducts() {
     { id: "1b9s8f2j", name: "Product 20", price: 77.04 },
   ];
 }
+
+interface CreateProductRequest {
+  name: string;
+  price: number;
+}
+
+export async function createProduct(_: CreateProductRequest) {
+  // delay de 1s
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
+  return;
+}

@@ -1,6 +1,9 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+
+import { createProduct } from "@/data/products";
 
 import {
   DialogClose,
@@ -26,8 +29,20 @@ export function CreateProductDialog() {
     resolver: zodResolver(createProductSchema),
   });
 
-  function handleCreateProduct(data: CreateProductShema) {
-    console.log(data);
+  const { mutateAsync: createProductFn } = useMutation({
+    mutationFn: createProduct,
+  });
+
+  async function handleCreateProduct(data: CreateProductShema) {
+    try {
+      await createProductFn({
+        name: data.name,
+        price: data.price,
+      });
+      alert("Produto cadastrado com sucesso.");
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
