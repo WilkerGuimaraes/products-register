@@ -14,6 +14,7 @@ import {
 import { Label } from "@radix-ui/react-label";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import { Loader2 } from "lucide-react";
 
 const createProductSchema = z.object({
   name: z.string().min(1, { message: "O nome é obrigatório." }),
@@ -90,11 +91,21 @@ export function CreateProductDialog() {
 
         <DialogFooter>
           <DialogClose asChild>
-            <Button type="button" variant={"outline"}>
+            <Button
+              type="button"
+              variant={"outline"}
+              disabled={formState.isSubmitting}
+            >
               Cancelar
             </Button>
           </DialogClose>
-          <Button type="submit">Salvar</Button>
+          <Button type="submit" disabled={formState.isSubmitting}>
+            {formState.isSubmitting ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              "Salvar"
+            )}
+          </Button>
         </DialogFooter>
       </form>
     </DialogContent>
