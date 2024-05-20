@@ -21,13 +21,16 @@ import { ProductsResponse } from "../data/products";
 export function Products() {
   const [searchParams] = useSearchParams();
 
+  const id = searchParams.get("id") ?? "";
+  const name = searchParams.get("name") ?? "";
+
   const page = searchParams.get("page") ? Number(searchParams.get("page")) : 1;
 
   const { data: products, isLoading } = useQuery<ProductsResponse>({
-    queryKey: ["products", page],
+    queryKey: ["products", page, id, name],
     queryFn: async () => {
       const data = await fetch(
-        `http://localhost:3333/products?_page=${page}&_per_page=20`
+        `http://localhost:3333/products?_page=${page}&_per_page=20&id=${id}&name=${name}`
       ).then((response) => response.json());
 
       // delay 1.5s
@@ -36,6 +39,16 @@ export function Products() {
       return data;
     },
   });
+
+  //   function handleFilter() {
+  //     setSearchParams((params) => {
+  //       params.set("page", "1");
+  //       params.set("id", id);
+  //       params.set("name", name);
+
+  //       return params;
+  //     });
+  //   }
 
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-4">
