@@ -1,9 +1,7 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-
-import { createProduct } from "@/data/products";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import {
   DialogClose,
@@ -18,19 +16,34 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
 const createProductSchema = z.object({
-  name: z.string(),
-  price: z.coerce.number(),
+  name: z.string().min(1, { message: "O nome é obrigatório." }),
+  price: z.coerce.number().min(1, { message: "O preço é obrigatório." }),
 });
 
 type CreateProductShema = z.infer<typeof createProductSchema>;
 
 export function CreateProductDialog() {
-  const { register, handleSubmit } = useForm<CreateProductShema>({
+  const queryClient = useQueryClient();
+
+  const { register, handleSubmit, formState } = useForm<CreateProductShema>({
     resolver: zodResolver(createProductSchema),
   });
 
   const { mutateAsync: createProductFn } = useMutation({
-    mutationFn: createProduct,
+    mutationFn: async ({ name, price }: CreateProductShema) => {
+      // delay 1.5s
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      await fetch("http://localhost:3333/products", {
+        method: "POST",
+        body: JSON.stringify({ name, price }),
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["products"],
+      });
+    },
   });
 
   async function handleCreateProduct(data: CreateProductShema) {
@@ -56,11 +69,23 @@ export function CreateProductDialog() {
         <div className="grid grid-cols-4 items-center text-right gap-3">
           <Label htmlFor="name">Produto:</Label>
           <Input className="col-span-3" id="name" {...register("name")} />
+
+          {formState.errors.name && (
+            <span className="text-sm text-red-500 col-span-3">
+              {formState.errors.name.message}
+            </span>
+          )}
         </div>
 
         <div className="grid grid-cols-4 items-center text-right gap-3">
           <Label htmlFor="price">Preço:</Label>
           <Input className="col-span-3" id="price" {...register("price")} />
+
+          {formState.errors.price && (
+            <span className="text-sm text-red-500 col-span-3">
+              {formState.errors.price.message}
+            </span>
+          )}
         </div>
 
         <DialogFooter>

@@ -1,4 +1,4 @@
-import { PlusCircle } from "lucide-react";
+import { Loader2, PlusCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
 import { Button } from "./components/ui/button";
@@ -14,12 +14,20 @@ import { Dialog, DialogTrigger } from "./components/ui/dialog";
 import { ProductsFilters } from "./components/products-filters";
 import { CreateProductDialog } from "./components/create-product-dialog";
 
-import { getProducts } from "./data/products";
-
+import { ProductsResponse } from "./data/products";
 export function App() {
-  const { data: products } = useQuery({
+  const { data: products, isLoading } = useQuery<ProductsResponse>({
     queryKey: ["products"],
-    queryFn: getProducts,
+    queryFn: async () => {
+      const data = await fetch(
+        "http://localhost:3333/products?_page=1&_per_page=20"
+      ).then((response) => response.json());
+
+      // delay 1.5s
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      return data;
+    },
   });
 
   return (
@@ -48,8 +56,15 @@ export function App() {
             <TableHead>Preço</TableHead>
           </TableHeader>
 
+          {isLoading && (
+            <h1 className="inline-flex gap-2 font-bold text-2xl">
+              <Loader2 className="size-8 animate-spin" />
+              Carregando...
+            </h1>
+          )}
+
           <TableBody>
-            {products?.map((product) => (
+            {products?.data.map((product) => (
               <TableRow key={product.id}>
                 <TableCell>{product.id}</TableCell>
                 <TableCell>{product.name}</TableCell>
