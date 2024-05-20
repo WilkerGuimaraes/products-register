@@ -2,6 +2,8 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Toaster, toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 import {
   DialogClose,
@@ -14,7 +16,6 @@ import {
 import { Label } from "@radix-ui/react-label";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { Loader2 } from "lucide-react";
 
 const createProductSchema = z.object({
   name: z.string().min(1, { message: "O nome é obrigatório." }),
@@ -53,61 +54,70 @@ export function CreateProductDialog() {
         name: data.name,
         price: data.price,
       });
-      alert("Produto cadastrado com sucesso.");
+      toast.success("Novo produto adicionado com sucesso!");
     } catch (error) {
       console.log(error);
+      toast.error("Algo deu errado!");
     }
   }
 
   return (
-    <DialogContent>
-      <DialogHeader>
-        <DialogTitle>Novo produto</DialogTitle>
-        <DialogDescription>Criar um novo produto no sistema</DialogDescription>
-      </DialogHeader>
+    <div>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Novo produto</DialogTitle>
+          <DialogDescription>
+            Criar um novo produto no sistema
+          </DialogDescription>
+        </DialogHeader>
 
-      <form onSubmit={handleSubmit(handleCreateProduct)} className="space-y-6">
-        <div className="grid grid-cols-4 items-center text-right gap-3">
-          <Label htmlFor="name">Produto:</Label>
-          <Input className="col-span-3" id="name" {...register("name")} />
+        <form
+          onSubmit={handleSubmit(handleCreateProduct)}
+          className="space-y-6"
+        >
+          <div className="grid grid-cols-4 items-center text-right gap-3">
+            <Label htmlFor="name">Produto:</Label>
+            <Input className="col-span-3" id="name" {...register("name")} />
 
-          {formState.errors.name && (
-            <span className="text-sm text-red-500 col-span-3">
-              {formState.errors.name.message}
-            </span>
-          )}
-        </div>
-
-        <div className="grid grid-cols-4 items-center text-right gap-3">
-          <Label htmlFor="price">Preço:</Label>
-          <Input className="col-span-3" id="price" {...register("price")} />
-
-          {formState.errors.price && (
-            <span className="text-sm text-red-500 col-span-3">
-              {formState.errors.price.message}
-            </span>
-          )}
-        </div>
-
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button
-              type="button"
-              variant={"outline"}
-              disabled={formState.isSubmitting}
-            >
-              Cancelar
-            </Button>
-          </DialogClose>
-          <Button type="submit" disabled={formState.isSubmitting}>
-            {formState.isSubmitting ? (
-              <Loader2 className="animate-spin" />
-            ) : (
-              "Salvar"
+            {formState.errors.name && (
+              <span className="text-sm text-red-500 col-span-3">
+                {formState.errors.name.message}
+              </span>
             )}
-          </Button>
-        </DialogFooter>
-      </form>
-    </DialogContent>
+          </div>
+
+          <div className="grid grid-cols-4 items-center text-right gap-3">
+            <Label htmlFor="price">Preço:</Label>
+            <Input className="col-span-3" id="price" {...register("price")} />
+
+            {formState.errors.price && (
+              <span className="text-sm text-red-500 col-span-3">
+                {formState.errors.price.message}
+              </span>
+            )}
+          </div>
+
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button
+                type="button"
+                variant={"outline"}
+                disabled={formState.isSubmitting}
+              >
+                Cancelar
+              </Button>
+            </DialogClose>
+            <Button type="submit" disabled={formState.isSubmitting}>
+              {formState.isSubmitting ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                "Salvar"
+              )}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+      <Toaster richColors />
+    </div>
   );
 }
