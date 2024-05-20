@@ -4,6 +4,8 @@
 
 ## Demonstração
 
+https://github.com/WilkerGuimaraes/products-register/assets/141461291/c300e586-8d88-474e-abf6-54dd23457b81
+
 # Registro de produtos
 
 ## 📃 Descrição
