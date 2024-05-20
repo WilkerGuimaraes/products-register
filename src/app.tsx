@@ -1,5 +1,6 @@
 import { Loader2, PlusCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "react-router-dom";
 
 import { Button } from "./components/ui/button";
 import {
@@ -13,14 +14,20 @@ import {
 import { Dialog, DialogTrigger } from "./components/ui/dialog";
 import { ProductsFilters } from "./components/products-filters";
 import { CreateProductDialog } from "./components/create-product-dialog";
+import { Pagination } from "./components/pagination";
 
 import { ProductsResponse } from "./data/products";
+
 export function App() {
+  const [searchParams] = useSearchParams();
+
+  const page = searchParams.get("page") ? Number(searchParams.get("page")) : 1;
+
   const { data: products, isLoading } = useQuery<ProductsResponse>({
-    queryKey: ["products"],
+    queryKey: ["products", page],
     queryFn: async () => {
       const data = await fetch(
-        "http://localhost:3333/products?_page=1&_per_page=20"
+        `http://localhost:3333/products?_page=${page}&_per_page=20`
       ).then((response) => response.json());
 
       // delay 1.5s
@@ -79,6 +86,10 @@ export function App() {
           </TableBody>
         </Table>
       </div>
+
+      {products && (
+        <Pagination page={page} items={products.items} pages={products.pages} />
+      )}
     </div>
   );
 }
