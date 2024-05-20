@@ -40,16 +40,6 @@ export function Products() {
     },
   });
 
-  //   function handleFilter() {
-  //     setSearchParams((params) => {
-  //       params.set("page", "1");
-  //       params.set("id", id);
-  //       params.set("name", name);
-
-  //       return params;
-  //     });
-  //   }
-
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-4">
       <h1 className="text-4xl font-bold">Produtos</h1>

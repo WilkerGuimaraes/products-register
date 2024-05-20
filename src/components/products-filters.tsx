@@ -2,10 +2,10 @@ import { Search } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSearchParams } from "react-router-dom";
+import { z } from "zod";
 
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { z } from "zod";
 
 const productsFiltersSchema = z.object({
   id: z.string().min(1, { message: "Informe o id do produto." }),
@@ -24,6 +24,7 @@ export function ProductsFilters() {
   function handleFilterProducts({ id, name }: ProductsFiltersSchema) {
     setSearchParams((state) => {
       if (id) {
+        state.set("page", "1");
         state.set("id", id);
       } else {
         state.delete("id");
@@ -34,6 +35,7 @@ export function ProductsFilters() {
 
     setSearchParams((state) => {
       if (name) {
+        state.set("page", "1");
         state.set("name", name);
       } else {
         state.delete("name");
