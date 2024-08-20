@@ -1,5 +1,5 @@
-import { Loader2, PlusCircle } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { Loader2, PlusCircle, Trash2 } from "lucide-react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 
@@ -19,6 +19,7 @@ import { Pagination } from "../components/pagination";
 
 import { Product, ProductsResponse } from "../data/products";
 import { useState } from "react";
+import { queryClient } from "@/lib/react-query";
 
 export function Products() {
   const [searchParams] = useSearchParams();
@@ -40,6 +41,15 @@ export function Products() {
       setCount(countResponse);
 
       return response.data.products;
+    },
+  });
+
+  const { mutateAsync: deleteProduct } = useMutation({
+    mutationFn: async (id: string) => {
+      await axios.delete(`http://localhost:3333/products/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
     },
   });
 
@@ -86,6 +96,14 @@ export function Products() {
                     style: "currency",
                     currency: "BRL",
                   })}
+                </TableCell>
+
+                <TableCell>
+                  <div className="flex justify-end">
+                    <button onClick={() => deleteProduct(product.id)}>
+                      <Trash2 className="size-4 text-red-500" />
+                    </button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
