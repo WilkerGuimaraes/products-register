@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Toaster, toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import axios from "axios";
 
 import {
   DialogClose,
@@ -33,12 +34,9 @@ export function CreateProductDialog() {
 
   const { mutateAsync: createProductFn } = useMutation({
     mutationFn: async ({ name, price }: CreateProductShema) => {
-      // delay 1.5s
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      await fetch("http://localhost:3333/products", {
-        method: "POST",
-        body: JSON.stringify({ name, price }),
+      await axios.post("http://localhost:3333/products", {
+        name,
+        price,
       });
     },
     onSuccess: () => {
