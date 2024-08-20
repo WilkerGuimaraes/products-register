@@ -1,6 +1,7 @@
 import { Loader2, PlusCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
+import axios from "axios";
 
 import { Button } from "../components/ui/button";
 import {
@@ -16,27 +17,29 @@ import { ProductsFilters } from "../components/products-filters";
 import { CreateProductDialog } from "../components/create-product-dialog";
 import { Pagination } from "../components/pagination";
 
-import { ProductsResponse } from "../data/products";
+import { Product, ProductsResponse } from "../data/products";
+import { useState } from "react";
 
 export function Products() {
   const [searchParams] = useSearchParams();
 
-  const id = searchParams.get("id") ?? "";
-  const name = searchParams.get("name") ?? "";
+  const [count, setCount] = useState(0);
+
+  const pages = Math.ceil(count / 20);
 
   const page = searchParams.get("page") ? Number(searchParams.get("page")) : 1;
 
-  const { data: products, isLoading } = useQuery<ProductsResponse>({
-    queryKey: ["products", page, id, name],
+  const { data: products, isLoading } = useQuery<Product[]>({
+    queryKey: ["products", page],
     queryFn: async () => {
-      const data = await fetch(
-        `http://localhost:3333/products?_page=${page}&_per_page=20&id=${id}&name=${name}`
-      ).then((response) => response.json());
+      const response = await axios.get<ProductsResponse>(
+        `http://localhost:3333/products/${page}`
+      );
 
-      // delay 1.5s
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const countResponse = response.data.count;
+      setCount(countResponse);
 
-      return data;
+      return response.data.products;
     },
   });
 
@@ -74,7 +77,7 @@ export function Products() {
           )}
 
           <TableBody>
-            {products?.data.map((product) => (
+            {products?.map((product) => (
               <TableRow key={product.id}>
                 <TableCell>{product.id}</TableCell>
                 <TableCell>{product.name}</TableCell>
@@ -91,7 +94,12 @@ export function Products() {
       </div>
 
       {products && (
-        <Pagination page={page} items={products.items} pages={products.pages} />
+        <Pagination
+          products={products}
+          page={page}
+          items={count}
+          pages={pages}
+        />
       )}
     </div>
   );

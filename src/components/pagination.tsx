@@ -7,14 +7,16 @@ import {
 import { useSearchParams } from "react-router-dom";
 
 import { Button } from "./ui/button";
+import { Product } from "@/data/products";
 
 interface PaginationProps {
+  products: Product[];
   page: number;
   items: number;
   pages: number;
 }
 
-export function Pagination({ page, items, pages }: PaginationProps) {
+export function Pagination({ products, page, items, pages }: PaginationProps) {
   const [, setSearchParams] = useSearchParams();
 
   function firstPage() {
@@ -57,12 +59,10 @@ export function Pagination({ page, items, pages }: PaginationProps) {
     });
   }
 
-  const lastPageItems = items % 10 || 10;
-
   return (
     <div className="flex items-center justify-between text-sm">
       <span>
-        Exibindo {page === pages ? lastPageItems : 20} de {items} Produtos
+        Exibindo {products.length} de {items} Produtos
       </span>
 
       <span>
