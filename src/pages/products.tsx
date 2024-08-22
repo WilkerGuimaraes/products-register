@@ -88,9 +88,11 @@ export function Products() {
         ) : (
           <Table>
             <TableHeader>
-              <TableHead>ID</TableHead>
-              <TableHead>Produto</TableHead>
-              <TableHead>Preço</TableHead>
+              <TableRow>
+                <TableHead>ID</TableHead>
+                <TableHead>Produto</TableHead>
+                <TableHead>Preço</TableHead>
+              </TableRow>
             </TableHeader>
 
             <TableBody>

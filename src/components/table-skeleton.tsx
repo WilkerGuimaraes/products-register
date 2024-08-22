@@ -13,10 +13,12 @@ export function TableSkeleton() {
   return (
     <Table>
       <TableHeader>
-        <TableHead>ID</TableHead>
-        <TableHead>Produto</TableHead>
-        <TableHead>Preço</TableHead>
-        <TableHead>Ações</TableHead>
+        <TableRow>
+          <TableHead>ID</TableHead>
+          <TableHead>Produto</TableHead>
+          <TableHead>Preço</TableHead>
+          <TableHead>Ações</TableHead>
+        </TableRow>
       </TableHeader>
 
       <TableBody>
