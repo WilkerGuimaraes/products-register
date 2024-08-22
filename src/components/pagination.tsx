@@ -60,7 +60,7 @@ export function Pagination({ products, page, items, pages }: PaginationProps) {
   }
 
   return (
-    <div className="flex items-center justify-between text-sm">
+    <div className="flex flex-col items-center gap-4 flex-wrap text-sm md:flex-row justify-between">
       <span>
         Exibindo {products.length} de {items} Produtos
       </span>

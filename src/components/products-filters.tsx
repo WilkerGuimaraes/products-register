@@ -70,7 +70,7 @@ export function ProductsFilters() {
 
       <Button type="submit" variant="link">
         <Search className="size-4 mr-2" />
-        Filtrar resultados
+        <span className="hidden sm:block">Filtrar resultados</span>
       </Button>
     </form>
   );

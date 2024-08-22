@@ -67,7 +67,7 @@ export function Products() {
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-4">
       <h1 className="text-4xl font-bold">Produtos</h1>
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 md:flex-row">
         <ProductsFilters />
 
         <Dialog>

@@ -95,7 +95,7 @@ export function CreateProductDialog() {
             )}
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="flex gap-2">
             <DialogClose asChild>
               <Button
                 type="button"
