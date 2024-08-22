@@ -8,8 +8,8 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
 const productsFiltersSchema = z.object({
-  id: z.string().min(1, { message: "Informe o id do produto." }),
-  name: z.string().min(1, { message: "Informe o nome do produto." }),
+  id: z.string().optional(),
+  name: z.string().optional(),
 });
 
 type ProductsFiltersSchema = z.infer<typeof productsFiltersSchema>;

@@ -2,6 +2,7 @@ import { Loader2, PlusCircle, Trash2 } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import axios from "axios";
+import { useState } from "react";
 
 import { Button } from "../components/ui/button";
 import {
@@ -18,7 +19,6 @@ import { CreateProductDialog } from "../components/create-product-dialog";
 import { Pagination } from "../components/pagination";
 
 import { Product, ProductsResponse } from "../data/products";
-import { useState } from "react";
 import { queryClient } from "@/lib/react-query";
 
 export function Products() {
@@ -28,13 +28,23 @@ export function Products() {
 
   const pages = Math.ceil(count / 20);
 
+  const id = searchParams.get("id") ?? "";
+  const name = searchParams.get("name") ?? "";
   const page = searchParams.get("page") ? Number(searchParams.get("page")) : 1;
 
   const { data: products, isLoading } = useQuery<Product[]>({
-    queryKey: ["products", page],
+    queryKey: ["products", page, id, name],
     queryFn: async () => {
+      const params = new URLSearchParams();
+
+      if (id) params.set("id", id);
+      if (name) params.set("name", name);
+      params.set("page", String(page));
+
+      const queryString = params.toString();
+
       const response = await axios.get<ProductsResponse>(
-        `http://localhost:3333/products/${page}`
+        `http://localhost:3333/products?${queryString}`
       );
 
       const countResponse = response.data.count;
