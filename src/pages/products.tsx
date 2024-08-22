@@ -1,4 +1,4 @@
-import { Loader2, PlusCircle, Trash2 } from "lucide-react";
+import { PlusCircle, Trash2 } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import axios from "axios";
@@ -20,6 +20,7 @@ import { Pagination } from "../components/pagination";
 
 import { Product, ProductsResponse } from "../data/products";
 import { queryClient } from "@/lib/react-query";
+import { TableSkeleton } from "@/components/table-skeleton";
 
 export function Products() {
   const [searchParams] = useSearchParams();
@@ -82,43 +83,40 @@ export function Products() {
       </div>
 
       <div className="border rounded-lg p-2">
-        <Table>
-          <TableHeader>
-            <TableHead>ID</TableHead>
-            <TableHead>Produto</TableHead>
-            <TableHead>Preço</TableHead>
-          </TableHeader>
+        {isLoading ? (
+          <TableSkeleton />
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableHead>ID</TableHead>
+              <TableHead>Produto</TableHead>
+              <TableHead>Preço</TableHead>
+            </TableHeader>
 
-          {isLoading && (
-            <h1 className="inline-flex gap-2 font-bold text-2xl">
-              <Loader2 className="size-8 animate-spin" />
-              Carregando...
-            </h1>
-          )}
+            <TableBody>
+              {products?.map((product) => (
+                <TableRow key={product.id}>
+                  <TableCell>{product.id}</TableCell>
+                  <TableCell>{product.name}</TableCell>
+                  <TableCell>
+                    {product.price.toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    })}
+                  </TableCell>
 
-          <TableBody>
-            {products?.map((product) => (
-              <TableRow key={product.id}>
-                <TableCell>{product.id}</TableCell>
-                <TableCell>{product.name}</TableCell>
-                <TableCell>
-                  {product.price.toLocaleString("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  })}
-                </TableCell>
-
-                <TableCell>
-                  <div className="flex justify-end">
-                    <button onClick={() => deleteProduct(product.id)}>
-                      <Trash2 className="size-4 text-red-500" />
-                    </button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+                  <TableCell>
+                    <div className="flex justify-end">
+                      <button onClick={() => deleteProduct(product.id)}>
+                        <Trash2 className="size-4 text-red-500" />
+                      </button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
       </div>
 
       {products && (
