@@ -45,7 +45,7 @@ export function Products() {
       const queryString = params.toString();
 
       const response = await axios.get<ProductsResponse>(
-        `http://localhost:3333/products?${queryString}`
+        `${import.meta.env.VITE_APP_API_URL}/products?${queryString}`
       );
 
       const countResponse = response.data.count;
@@ -57,7 +57,7 @@ export function Products() {
 
   const { mutateAsync: deleteProduct } = useMutation({
     mutationFn: async (id: string) => {
-      await axios.delete(`http://localhost:3333/products/${id}`);
+      await axios.delete(`${import.meta.env.VITE_APP_API_URL}/products/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
